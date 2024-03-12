@@ -9,6 +9,16 @@ public class Player : MonoBehaviour
     public float moveSpeed = 8f;
     public float jumpForce = 15f;
 
+
+    [Header(" Collision ")]
+    [SerializeField] private LayerMask whatIsGround;
+    [SerializeField] private Vector2 groundCheckBoxSize;
+    [SerializeField] private float castDistance;
+
+
+    [Header(" State ")]
+    private bool _isGrounded;
+
     #region [--- Components ---]
     public Animator animator {  get; private set; }
     public Rigidbody2D rb { get; private set; }
@@ -42,10 +52,22 @@ public class Player : MonoBehaviour
     private void Update()
     {
         stateMachine.currentState.Update();
+        isGrounded();
     }
 
     public void SetVelocity(float _xVelocity, float _yVelocity)
     {
         rb.velocity = new Vector2(_xVelocity, _yVelocity);
+    }
+
+    public void isGrounded()
+    {
+        _isGrounded =  Physics2D.BoxCast(transform.position, groundCheckBoxSize, 0, -transform.up,castDistance, whatIsGround);
+        Debug.Log(_isGrounded);
+    }
+
+    private void OnDrawGizmos()
+    {
+        Gizmos.DrawWireCube(transform.position-transform.up * castDistance, groundCheckBoxSize);
     }
 }
