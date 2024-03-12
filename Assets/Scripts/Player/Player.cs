@@ -18,7 +18,6 @@ public class Player : MonoBehaviour
 
     [Header(" Wall Collision ")]
     [SerializeField] private LayerMask whatIsWall;
-    [SerializeField] private Vector2 wallBoxSize;
     [SerializeField] private float wallCastDistance;
 
     [Header(" State ")]
@@ -66,13 +65,12 @@ public class Player : MonoBehaviour
     }
 
     public bool isGrounded() => Physics2D.BoxCast(transform.position, groundCheckBoxSize, 0, -transform.up, groundCastDistance, whatIsGround);
-
-    public bool isWallDetected() => Physics2D.BoxCast(transform.position, groundCheckBoxSize, 0, -transform.right, wallCastDistance, whatIsWall);
-
+    public bool isWallDetected() => Physics2D.Raycast(transform.position, Vector2.right, wallCastDistance, whatIsWall);
     private void OnDrawGizmos()
     {
-        Gizmos.DrawWireCube(transform.position-transform.up * groundCastDistance, groundCheckBoxSize);
-        Gizmos.DrawWireCube(transform.position - transform.right * wallCastDistance, wallBoxSize);
+        // Ground & Wall Detection Gizsom
+        Gizmos.DrawWireCube(transform.position - transform.up * groundCastDistance, groundCheckBoxSize);
+        Gizmos.DrawLine(transform.position, new Vector3(transform.position.x + wallCastDistance, transform.position.y));
 
     }
 }
