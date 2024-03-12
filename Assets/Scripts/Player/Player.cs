@@ -10,11 +10,16 @@ public class Player : MonoBehaviour
     public float jumpForce = 15f;
 
 
-    [Header(" Collision ")]
+    [Header(" Ground Collision ")]
     [SerializeField] private LayerMask whatIsGround;
     [SerializeField] private Vector2 groundCheckBoxSize;
-    [SerializeField] private float castDistance;
+    [SerializeField] private float groundCastDistance;
 
+
+    [Header(" Wall Collision ")]
+    [SerializeField] private LayerMask whatIsWall;
+    [SerializeField] private Vector2 wallBoxSize;
+    [SerializeField] private float wallCastDistance;
 
     [Header(" State ")]
     private bool _isGrounded;
@@ -45,14 +50,14 @@ public class Player : MonoBehaviour
     {
         animator = GetComponentInChildren<Animator>();
         rb = GetComponent<Rigidbody2D>();
-
         stateMachine.Initialize(idleState);
     }
 
     private void Update()
     {
         stateMachine.currentState.Update();
-        isGrounded();
+        Debug.Log("Ground " + isGrounded());
+        Debug.Log("Wall " + isWallDetected());
     }
 
     public void SetVelocity(float _xVelocity, float _yVelocity)
@@ -60,14 +65,14 @@ public class Player : MonoBehaviour
         rb.velocity = new Vector2(_xVelocity, _yVelocity);
     }
 
-    public void isGrounded()
-    {
-        _isGrounded =  Physics2D.BoxCast(transform.position, groundCheckBoxSize, 0, -transform.up,castDistance, whatIsGround);
-        Debug.Log(_isGrounded);
-    }
+    public bool isGrounded() => Physics2D.BoxCast(transform.position, groundCheckBoxSize, 0, -transform.up, groundCastDistance, whatIsGround);
+
+    public bool isWallDetected() => Physics2D.BoxCast(transform.position, groundCheckBoxSize, 0, -transform.right, wallCastDistance, whatIsWall);
 
     private void OnDrawGizmos()
     {
-        Gizmos.DrawWireCube(transform.position-transform.up * castDistance, groundCheckBoxSize);
+        Gizmos.DrawWireCube(transform.position-transform.up * groundCastDistance, groundCheckBoxSize);
+        Gizmos.DrawWireCube(transform.position - transform.right * wallCastDistance, wallBoxSize);
+
     }
 }
