@@ -16,11 +16,21 @@ public class PlayerState
         this.animBoolName = animBoolName;
     }
 
-    public virtual void Enter(){}
+    public virtual void Enter()
+    {
+        player.animator.SetBool(animBoolName, true);
+        Debug.Log("Entered State : " + animBoolName);
+    }
 
-    public virtual void Update(){}
+    public virtual void Update()
+    {
+        Debug.Log("Current State : " + animBoolName);
+    }
 
 
-    public virtual void Exit(){}
+    public virtual void Exit()
+    {
+        player.animator.SetBool(animBoolName, false);
+    }
 
 }
